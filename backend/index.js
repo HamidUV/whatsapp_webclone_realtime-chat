@@ -11,10 +11,23 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
 
-// Initialize Socket.IO
+// // Initialize Socket.IO
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173", // Your React frontend URL
+//     methods: ["GET", "POST"]
+//   }
+// });
+
+// Define who is allowed to connect
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://whatsapp-webclone-realtime-chat-sxi.vercel.app" // <-- ADD YOUR LIVE FRONTEND URL HERE
+];
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Your React frontend URL
+    origin: allowedOrigins,
     methods: ["GET", "POST"]
   }
 });
