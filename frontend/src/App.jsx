@@ -6,7 +6,11 @@ import ChatWindow from './components/ChatWindow';
 import SplashScreen from './components/SplashScreen';
 
 // Establish the connection to the backend server.
-const socket = io('http://localhost:5001');
+// const socket = io('http://localhost:5001');
+
+// Use the production URL when deployed, otherwise use the local one.
+const URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5001';
+const socket = io(URL);
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +33,7 @@ function App() {
   // --- EFFECT 2: Fetch initial conversations data ONCE after splash screen ---
   useEffect(() => {
     if (isLoading) return;
-    axios.get('http://localhost:5001/api/conversations')
+    axios.get('https://whatsapp-webclone-realtime-chat.vercel.app/api/conversations')
       .then(res => setConversations(res.data))
       .catch(err => console.error("Error fetching conversations:", err));
   }, [isLoading]);
@@ -84,7 +88,7 @@ function App() {
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
     setMessages([]); // Clear previous messages to show a loading state
-    axios.get(`http://localhost:5001/api/messages/${chat._id}`)
+    axios.get(`https://whatsapp-webclone-realtime-chat.vercel.app/api/messages/${chat._id}`)
       .then(res => {
         setMessages(res.data);
       });
@@ -94,7 +98,7 @@ function App() {
     if (!selectedChat) return;
     // We send the message, and our own 'newMessage' listener will handle adding it to the UI.
     // This ensures that all tabs (including the sender's) get the update from the same source of truth: the server.
-    axios.post('http://localhost:5001/api/messages', {
+    axios.post('https://whatsapp-webclone-realtime-chat.vercel.app/api/messages', {
         wa_id: selectedChat._id, text: text
     });
   };
